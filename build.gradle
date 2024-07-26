@@ -1,0 +1,55 @@
+buildscript {
+	dependencies {
+		classpath "gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.22.1"
+	}
+}
+
+
+plugins {
+	id 'org.springframework.boot' version '2.5.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'war'
+}
+
+group = 'com.bps'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.6'
+	compileOnly 'org.projectlombok:lombok:1.18.22'
+	implementation 'de.mkammerer:argon2-jvm:2.5'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'com.h2database:h2:1.4.200'
+	implementation 'mysql:mysql-connector-java:8.0.19'
+	implementation 'de.mkammerer:argon2-jvm:2.5'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'org.apache.commons:commons-collections4:4.4'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-test'
+
+}
+
+// docker: plugin apply  
+apply plugin: 'com.palantir.docker'
+
+// docker: new task docker 
+docker {
+    dependsOn build
+    //name "${project.name}"
+    name "ejercicio.war"
+    files bootJar.archivePath
+    buildArgs(['JAR_FILE': "${bootJar.archiveName}"])
+}
+
+test {
+	useJUnitPlatform()
+}

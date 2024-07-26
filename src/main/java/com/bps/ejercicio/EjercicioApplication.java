@@ -1,0 +1,22 @@
+package com.bps.ejercicio;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class EjercicioApplication {
+
+	/*public static void main(String[] args) {
+		SpringApplication.run(EjercicioApplication.class, args);
+	}*/
+
+	public static void main(String[] args) {
+		try {
+			SpringApplication.run(EjercicioApplication.class, args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+}
