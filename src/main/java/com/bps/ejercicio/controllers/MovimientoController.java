@@ -59,27 +59,51 @@ public class MovimientoController {
 			fechaInicioD = formato.parse(fechaInicio);
 			Date fechaFinD = formato.parse(fechaFin);
 			List<Cuenta> cuentas =  movimientoDao.getMovimientoPorFecha(fechaInicioD,fechaFinD,cuentaID);
-			List<Cuenta> returnCuenta = new ArrayList<>(0);
-			if(CollectionUtils.isNotEmpty(cuentas)){
-				for(Cuenta xr: cuentas){
-					Cuenta c = new Cuenta();
-					c.setTipo(xr.getTipo());
-					c.setNumero(xr.getNumero());
-					c.setSaldo(xr.getSaldo());
-					
-					returnCuenta.add(c);
-				}
-
-			}
-
-			return returnCuenta;
+			return validarCuenta(cuentas);
 
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-    	
 		return null;
     }
+
+	/**
+	 * Metodo que valida cuentas para regresar datos
+	 * @param cuentas
+	 * @return
+	 */
+	public List<Cuenta> validarCuenta(List<Cuenta> cuentas){
+		List<Cuenta> returnCuenta = new ArrayList<>(0);
+		List<Movimiento> returnMovimiento = new ArrayList<>(0);
+		if(CollectionUtils.isNotEmpty(cuentas)){
+			for(Cuenta xr: cuentas){
+				Cuenta c = new Cuenta();
+				c.setTipo(xr.getTipo());
+				c.setNumero(xr.getNumero());
+				c.setSaldo(xr.getSaldo());
+				if (xr.getCliente() != null && xr.getCliente().getNombre() != null){
+					Cliente cli = new Cliente();
+					cli.setNombre(xr.getCliente().getNombre());
+					c.setCliente(cli);
+				}
+				if(CollectionUtils.isNotEmpty(xr.getMovimientos())){
+					for (Movimiento m : xr.getMovimientos()){
+						Movimiento mov = new Movimiento();
+						if (m.getTipoMovimiento() != null)
+							mov.setTipoMovimiento(m.getTipoMovimiento());
+						if(m.getSaldo() != null)
+							mov.setSaldo(m.getSaldo());
+						if (m.getFecha() != null)
+							mov.setFecha(m.getFecha());
+						returnMovimiento.add(mov);
+					}
+					c.setMovimientos(returnMovimiento);
+				}
+				returnCuenta.add(c);
+			}
+		}
+		return returnCuenta;
+	}
     
     /**
      * REST RegistroMovimiento con validaciones

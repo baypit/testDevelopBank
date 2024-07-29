@@ -2,11 +2,6 @@ package com.bps.ejercicio.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
-
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 
 

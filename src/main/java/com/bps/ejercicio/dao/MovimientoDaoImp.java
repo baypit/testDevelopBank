@@ -21,9 +21,6 @@ public class MovimientoDaoImp implements MovimientoDao {
     @PersistenceContext
     EntityManager entityManager;
 
-	//@Autowired
-	//CuentaDao cuentaDao;
-
     @SuppressWarnings("unchecked")
 	@Override
     @Transactional
@@ -81,7 +78,6 @@ public class MovimientoDaoImp implements MovimientoDao {
 	        	saldoAnterior = movimientoActual.getSaldo();
 	        	
 	        	Query query2 = entityManager.createQuery("UPDATE Movimiento c SET c.estado =0 WHERE  id =:id")
-				      //.setParameter("numero", movimientoActual.getCuenta().getNumero())
 				      .setParameter("id", movimientoActual.getId());
 
 		        int rowsUpdated = query2.executeUpdate();
@@ -89,11 +85,9 @@ public class MovimientoDaoImp implements MovimientoDao {
 
 	        	
 	        }
-			
 			movimiento.setFecha(new Date());
 			movimiento.setSaldo(validarSaldo(movimiento, saldoAnterior));
 			entityManager.merge(movimiento);
-
 
 		} catch (Exception e) {
 			throw new Exception("Error registrando movimiento" + e.getMessage());
@@ -119,7 +113,6 @@ public class MovimientoDaoImp implements MovimientoDao {
 	@Transactional
 	public List<Cuenta> getMovimientoPorFecha(Date fechaInicio, Date fechaFin, Integer cuentaID) {
 
-		//String query = "Select c.cuentaID, c.numero, c.tipo, c.saldo, c.estado, m.fecha, m.tipoMovimiento FROM Cuenta c JOIN FETCH c.movimientos m where c.cuentaID = :numero and m.fecha BETWEEN :fechaInicio and :fechaFin";
 		String query = "SELECT c, m FROM Cuenta c JOIN FETCH c.movimientos m WHERE c.cuentaID = :numero AND m.fecha BETWEEN :fechaInicio AND :fechaFin";
         List<Cuenta> lista = entityManager.createQuery(query)
                 .setParameter("numero", cuentaID)
@@ -158,7 +151,6 @@ public class MovimientoDaoImp implements MovimientoDao {
         	Movimiento movimientoActual=lista.get(0);
         	
         	Query query2 = entityManager.createQuery("UPDATE Movimiento c SET c.estado =0 WHERE numeroCuenta = :numero and id =:id")
-			      //.setParameter("numero", movimientoActual.getNumeroCuenta())
 			      .setParameter("id", movimientoActual.getId());
 
 	        int rowsUpdated = query2.executeUpdate();
